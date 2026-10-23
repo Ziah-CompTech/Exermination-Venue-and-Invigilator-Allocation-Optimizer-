@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Manual Edit — Run #{{ run.id }}{% endblock %}
+{% block content %}
+<h3>Manual Editing — Run #{{ run.id }}
+  <small class="text-muted">{{ run.exam_period }}</small></h3>
+<p class="text-muted small">
+  Manual editing will be enabled in a future batch. For now, use the
+  Conflict Viewer to see what needs fixing, adjust your data, and re-run
+  the optimiser.
+</p>
+<a href="{{ url_for('allocations.view', rid=run.id) }}"
+   class="btn btn-outline-secondary">Back to run</a>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Departments{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Departments</h3>
+  <div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('subjects.index') }}">
+      Back to Subjects</a>
+    <a class="btn btn-primary" href="{{ url_for('subjects.department_new') }}">
+      <i class="bi bi-plus-lg"></i> New Department</a>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <table class="table align-middle mb-0">
+    <thead class="table-light">
+      <tr><th>Code</th><th>Name</th><th>Subjects</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for d in items %}
+      <tr>
+        <td><strong>{{ d.code }}</strong></td>
+        <td>{{ d.name }}</td>
+        <td>{{ d.subjects|length }}</td>
+        <td class="text-end">
+          <a class="btn btn-sm btn-outline-primary"
+             href="{{ url_for('subjects.department_edit', did=d.id) }}">Edit</a>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="text-center text-muted py-4">No departments yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

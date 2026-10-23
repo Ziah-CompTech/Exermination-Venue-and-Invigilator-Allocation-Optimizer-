@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Exceptions{% endblock %}
+{% block content %}
+<h3>Conflict &amp; Exception Report</h3>
+<div class="mb-2">
+  <a class="btn btn-sm btn-outline-secondary me-2"
+     href="{{ url_for('reports.index') }}">
+    <i class="bi bi-arrow-left"></i> Back to Reports
+  </a>
+  <a class="btn btn-sm btn-outline-primary"
+     href="{{ url_for('reports.exceptions', format='csv') }}">CSV</a>
+  <a class="btn btn-sm btn-outline-danger"
+     href="{{ url_for('reports.exceptions', format='pdf') }}">PDF</a>
+  <button class="btn btn-sm btn-outline-dark"
+          onclick="window.print()">Print</button>
+</div>
+{% for key, lines in formatted.items() %}
+  <div class="card shadow-sm mt-3">
+    <div class="card-header bg-white fw-semibold">
+      {{ key.replace('_', ' ')|title }}
+      <span class="badge bg-secondary">{{ lines|length }}</span>
+    </div>
+    {% if lines %}
+      <ul class="list-group list-group-flush small">
+        {% for line in lines %}
+          <li class="list-group-item">{{ line }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="card-body small text-muted">None.</div>
+    {% endif %}
+  </div>
+{% endfor %}
+<p class="text-muted small mt-2">Generated
+  {{ generated_at.strftime('%Y-%m-%d %H:%M UTC') }}</p>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">
+        <h4 class="mb-0"><i class="bi bi-gear"></i> System Settings</h4>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info small">
+          These values configure institution-wide policy. They are used by
+          the allocation engine and the report headers.
+        </div>
+        <form method="post" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.institution_name.label(class="form-label") }}
+            {{ form.institution_name(class="form-control") }}
+            <div class="form-text">
+              Appears in PDF report headers and the page footer.
+            </div>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              {{ form.default_safety_margin.label(class="form-label") }}
+              {{ form.default_safety_margin(class="form-control") }}
+              <div class="form-text">Seats reserved per venue for spacing.</div>
+            </div>
+            <div class="col-md-6">
+              {{ form.solver_max_time_seconds.label(class="form-label") }}
+              {{ form.solver_max_time_seconds(class="form-control") }}
+              <div class="form-text">
+                Maximum time the CP-SAT solver may run per allocation.
+              </div>
+            </div>
+            <div class="col-md-12">
+              {{ form.default_invigilators_per_session.label(class="form-label") }}
+              {{ form.default_invigilators_per_session(class="form-control") }}
+              <div class="form-text">
+                Applied to newly created examination sessions.
+              </div>
+            </div>
+            <div class="col-md-6">
+              {{ form.default_max_duties_per_day.label(class="form-label") }}
+              {{ form.default_max_duties_per_day(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+              {{ form.default_max_duties_per_period.label(class="form-label") }}
+              {{ form.default_max_duties_per_period(class="form-control") }}
+            </div>
+          </div>
+          <div class="mt-4">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+      </div>
+    </div>
+    <p class="text-muted small mt-3">
+      Last updated: {{ s.updated_at.strftime('%Y-%m-%d %H:%M UTC') }}
+    </p>
+  </div>
+</div>
+{% endblock %}

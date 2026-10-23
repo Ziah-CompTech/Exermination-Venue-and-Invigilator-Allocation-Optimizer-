@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Venue Allocation{% endblock %}
+{% block content %}
+<h3>Venue Allocation Report</h3>
+{% set show_dates = False %}
+{% include "reports/_toolbar.html" %}
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm align-middle mb-0">
+      <thead class="table-light">
+        <tr><th>Date</th><th>Time</th><th>Venue</th><th>Name</th>
+            <th>Capacity</th><th>Assigned</th><th>Subject</th>
+            <th>Manual</th></tr>
+      </thead>
+      <tbody>
+      {% for r in rows %}
+        <tr>
+          <td>{{ r.date }}</td>
+          <td>{{ r.start.strftime('%H:%M') }}–{{ r.end.strftime('%H:%M') }}</td>
+          <td>{{ r.venue_code }}</td>
+          <td>{{ r.venue_name }}</td>
+          <td>{{ r.capacity }}</td>
+          <td>{{ r.assigned }}</td>
+          <td>{{ r.subject }}</td>
+          <td>{% if r.manual %}<span class="badge bg-info">manual</span>{% endif %}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="8" class="text-center text-muted py-4">
+          No allocations.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<p class="text-muted small mt-2">Generated
+  {{ generated_at.strftime('%Y-%m-%d %H:%M UTC') }}</p>
+{% endblock %}

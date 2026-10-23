@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Conflicts{% endblock %}
+{% block content %}
+<h3>Conflict Viewer</h3>
+<p class="text-muted">Live scan of persisted allocations for hard-constraint
+violations.</p>
+
+{% macro list_block(title, items) %}
+<div class="card shadow-sm mt-3">
+  <div class="card-header bg-white fw-semibold">
+    {{ title }} <span class="badge bg-secondary">{{ items|length }}</span>
+  </div>
+  {% if items %}
+    <ul class="list-group list-group-flush small">
+      {% for line in items %}
+        <li class="list-group-item">{{ line }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="card-body text-muted small">None.</div>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{{ list_block("Unallocated sessions",
+              formatted.unallocated_sessions) }}
+{{ list_block("Venue over capacity",
+              formatted.venue_over_capacity) }}
+{{ list_block("Venue double-booked",
+              formatted.venue_double_booked) }}
+{{ list_block("Invigilator double-booked",
+              formatted.invigilator_double_booked) }}
+{{ list_block("Invigilator teaches subject",
+              formatted.invigilator_teaches_subject) }}
+{{ list_block("Invigilator unavailable / inactive",
+              formatted.invigilator_unavailable) }}
+{{ list_block("Invigilator workload exceeded",
+              formatted.invigilator_workload_exceeded) }}
+{{ list_block("Insufficient invigilators",
+              formatted.insufficient_invigilators) }}
+{{ list_block("Student session clashes",
+              formatted.student_conflicts) }}
+
+{% if remedies %}
+<div class="card shadow-sm mt-3 border-start border-4 border-info">
+  <div class="card-header bg-white fw-semibold">Suggested remedies</div>
+  <ul class="list-group list-group-flush small">
+    {% for r in remedies %}<li class="list-group-item">{{ r }}</li>{% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<a href="{{ url_for('allocations.index') }}"
+   class="btn btn-outline-secondary mt-3">Back</a>
+{% endblock %}

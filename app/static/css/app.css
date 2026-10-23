@@ -1,0 +1,20 @@
+:root {
+  --navy: #0b2b52;
+  --navy-2: #123a6b;
+  --teal: #0f9d9d;
+  --accent: #2f80ed;
+}
+body { background: #f5f7fb; }
+.app-navbar { background: linear-gradient(90deg, var(--navy), var(--navy-2)); }
+.app-navbar .navbar-brand { font-weight: 600; letter-spacing: .3px; }
+.stat-card { transition: transform .15s ease, box-shadow .15s ease; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important; }
+.card { border-radius: .75rem; }
+.table thead th { font-size: .85rem; text-transform: uppercase; letter-spacing: .3px; }
+.btn-primary { background: var(--accent); border-color: var(--accent); }
+.btn-primary:hover { background: #1f6fd6; border-color: #1f6fd6; }
+.badge-status-published { background: var(--teal); }
+.text-muted { color: #6b7280 !important; }
+@media (max-width: 576px) {
+  .stat-card .fs-4 { font-size: 1.25rem; }
+}

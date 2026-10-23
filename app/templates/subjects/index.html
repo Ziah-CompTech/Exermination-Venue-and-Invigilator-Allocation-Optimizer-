@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Subjects{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Subjects</h3>
+  <div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('subjects.departments') }}">
+      <i class="bi bi-diagram-3"></i> Departments</a>
+    <a class="btn btn-primary" href="{{ url_for('subjects.new') }}">
+      <i class="bi bi-plus-lg"></i> New Subject</a>
+  </div>
+</div>
+
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-6">
+    <input class="form-control" name="q" value="{{ q }}"
+           placeholder="Search code or title">
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-outline-secondary w-100">Search</button>
+  </div>
+</form>
+
+<div class="card shadow-sm">
+  <table class="table align-middle mb-0">
+    <thead class="table-light">
+      <tr><th>Code</th><th>Title</th><th>Credits</th><th>Department</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for s in page.items %}
+      <tr>
+        <td><strong>{{ s.code }}</strong></td>
+        <td>{{ s.title }}</td>
+        <td>{{ s.credit_hours }}</td>
+        <td>{{ s.department.name if s.department else '—' }}</td>
+        <td class="text-end">
+          <a class="btn btn-sm btn-outline-primary"
+             href="{{ url_for('subjects.edit', sid=s.id) }}">Edit</a>
+          <form class="d-inline" method="post"
+                action="{{ url_for('subjects.delete', sid=s.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-sm btn-outline-danger"
+                    data-confirm="Delete subject {{ s.code }}?">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="text-center text-muted py-4">No subjects yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if page.pages > 1 %}
+<nav class="mt-3">
+  <ul class="pagination justify-content-center mb-0">
+    <li class="page-item {% if not page.has_prev %}disabled{% endif %}">
+      <a class="page-link" href="?page={{ page.prev_num }}&q={{ q }}">Previous</a>
+    </li>
+    <li class="page-item disabled">
+      <span class="page-link">Page {{ page.page }} / {{ page.pages }}</span>
+    </li>
+    <li class="page-item {% if not page.has_next %}disabled{% endif %}">
+      <a class="page-link" href="?page={{ page.next_num }}&q={{ q }}">Next</a>
+    </li>
+  </ul>
+</nav>
+{% endif %}
+{% endblock %}

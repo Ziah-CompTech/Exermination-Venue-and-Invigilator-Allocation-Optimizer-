@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Sessions — {{ e.title }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Sessions — {{ e.title }}</h3>
+  <a href="{{ url_for('examinations.view', eid=e.id) }}"
+     class="btn btn-outline-secondary">Back to Examination</a>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">Add session</div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.exam_date.label(class="form-label") }}
+            {{ form.exam_date(class="form-control", type="date") }}
+          </div>
+          <div class="mb-3">
+            {{ form.start_time.label(class="form-label") }}
+            {{ form.start_time(class="form-control", type="time") }}
+          </div>
+          <div class="mb-3">
+            {{ form.end_time.label(class="form-label") }}
+            {{ form.end_time(class="form-control", type="time") }}
+          </div>
+          <div class="mb-3">
+            {{ form.expected_candidates.label(class="form-label") }}
+            {{ form.expected_candidates(class="form-control") }}
+          </div>
+          <div class="mb-3">
+            {{ form.required_invigilators.label(class="form-label") }}
+            {{ form.required_invigilators(class="form-control") }}
+          </div>
+          {{ form.submit(class="btn btn-primary") }}
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">Scheduled sessions</div>
+      <ul class="list-group list-group-flush">
+        {% for s in e.sessions %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ s.exam_date }}</strong>
+            {{ s.start_time.strftime('%H:%M') }}–{{ s.end_time.strftime('%H:%M') }}
+            · {{ s.expected_candidates }} candidates
+            · needs {{ s.required_invigilators }} invigilator(s)
+            <span class="badge bg-secondary">{{ s.status }}</span>
+          </div>
+          <form method="post"
+                action="{{ url_for('examinations.delete_session', sid=s.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-sm btn-outline-danger"
+                    data-confirm="Delete this session?">Delete</button>
+          </form>
+        </li>
+        {% else %}
+          <li class="list-group-item text-muted">No sessions yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

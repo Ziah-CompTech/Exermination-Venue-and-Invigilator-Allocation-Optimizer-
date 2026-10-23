@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white"><h4 class="mb-0">{{ title }}</h4></div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="row g-3">
+            <div class="col-md-4">
+              {{ form.code.label(class="form-label") }}
+              {{ form.code(class="form-control") }}
+            </div>
+            <div class="col-md-8">
+              {{ form.name.label(class="form-label") }}
+              {{ form.name(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+              {{ form.building.label(class="form-label") }}
+              {{ form.building(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+              {{ form.location.label(class="form-label") }}
+              {{ form.location(class="form-control") }}
+            </div>
+            <div class="col-md-4">
+              {{ form.capacity.label(class="form-label") }}
+              {{ form.capacity(class="form-control") }}
+            </div>
+            <div class="col-md-4">
+              {{ form.usable_capacity.label(class="form-label") }}
+              {{ form.usable_capacity(class="form-control") }}
+              <div class="form-text">Optional — overrides capacity for allocation.</div>
+            </div>
+            <div class="col-md-4">
+              {{ form.venue_type.label(class="form-label") }}
+              {{ form.venue_type(class="form-select") }}
+            </div>
+            <div class="col-md-12">
+              {{ form.facilities.label(class="form-label") }}
+              {{ form.facilities(class="form-control") }}
+              <div class="form-text">E.g. <code>projector, ac, computers, accessible</code></div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-check mt-4">
+                {{ form.is_accessible(class="form-check-input") }}
+                {{ form.is_accessible.label(class="form-check-label") }}
+              </div>
+            </div>
+            <div class="col-md-4">
+              {{ form.status.label(class="form-label") }}
+              {{ form.status(class="form-select") }}
+            </div>
+            <div class="col-md-12">
+              {{ form.accessibility_notes.label(class="form-label") }}
+              {{ form.accessibility_notes(class="form-control", rows=2) }}
+            </div>
+          </div>
+          <div class="mt-4 d-flex gap-2">
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('venues.index') }}"
+               class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

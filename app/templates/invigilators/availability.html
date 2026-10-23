@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Availability — {{ i.staff_number }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Availability — {{ i.full_name }} ({{ i.staff_number }})</h3>
+  <a href="{{ url_for('invigilators.index') }}"
+     class="btn btn-outline-secondary">Back</a>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">Add availability window</div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.start_dt.label(class="form-label") }}
+            {{ form.start_dt(class="form-control", type="datetime-local") }}
+          </div>
+          <div class="mb-3">
+            {{ form.end_dt.label(class="form-label") }}
+            {{ form.end_dt(class="form-control", type="datetime-local") }}
+          </div>
+          <div class="mb-3">
+            {{ form.is_available.label(class="form-label") }}
+            {{ form.is_available(class="form-select") }}
+          </div>
+          <div class="mb-3">
+            {{ form.reason.label(class="form-label") }}
+            {{ form.reason(class="form-control") }}
+          </div>
+          {{ form.submit(class="btn btn-primary") }}
+        </form>
+        <p class="text-muted small mt-3 mb-0">
+          If you add any "Available" windows, the invigilator is only
+          considered available during those windows.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">Entries</div>
+      <ul class="list-group list-group-flush">
+        {% for a in items %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            {% if a.is_available %}
+              <span class="badge bg-success">Available</span>
+            {% else %}
+              <span class="badge bg-danger">Unavailable</span>
+            {% endif %}
+            {{ a.start_dt.strftime('%Y-%m-%d %H:%M') }}
+            → {{ a.end_dt.strftime('%Y-%m-%d %H:%M') }}
+            {% if a.reason %}<span class="text-muted">({{ a.reason }})</span>{% endif %}
+          </span>
+          <form method="post"
+                action="{{ url_for('invigilators.delete_availability', aid=a.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-sm btn-outline-danger">Remove</button>
+          </form>
+        </li>
+        {% else %}
+          <li class="list-group-item text-muted">
+            No entries — available by default.
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

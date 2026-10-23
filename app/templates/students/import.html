@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Import Students{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white"><h4 class="mb-0">Import Students from CSV</h4></div>
+      <div class="card-body">
+        <p class="text-muted">Required columns: <code>reg_number</code>,
+          <code>full_name</code>. Optional: <code>email</code>,
+          <code>phone</code>, <code>year_of_study</code>,
+          <code>programme</code>, <code>department_code</code>.</p>
+        <a href="{{ url_for('students.csv_template') }}"
+           class="btn btn-sm btn-outline-secondary mb-3">
+          <i class="bi bi-download"></i> Download template</a>
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.file.label(class="form-label") }}
+            {{ form.file(class="form-control") }}
+          </div>
+          <button class="btn btn-primary">{{ form.submit.label.text }}</button>
+          <a href="{{ url_for('students.index') }}"
+             class="btn btn-outline-secondary">Cancel</a>
+        </form>
+        {% if summary %}
+        <hr>
+        <h6>Import Summary</h6>
+        <p class="mb-1">Created: <strong>{{ summary.created }}</strong></p>
+        <p class="mb-1">Skipped (duplicates): <strong>{{ summary.skipped }}</strong></p>
+        {% if summary.errors %}
+          <div class="alert alert-warning small">
+            <strong>{{ summary.errors|length }} row error(s):</strong>
+            <ul class="mb-0">
+              {% for e in summary.errors %}<li>{{ e }}</li>{% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Allocation Summary{% endblock %}
+{% block content %}
+<h3>Allocation Summary — {{ data.period }}</h3>
+{% set show_dates = False %}
+{% include "reports/_toolbar.html" %}
+<div class="row g-3">
+  {% set cards = [
+    ('Total sessions', data.total_sessions, 'primary'),
+    ('Fully allocated', data.fully_allocated, 'success'),
+    ('Unallocated', data.unallocated, 'warning'),
+    ('Capacity warnings', data.capacity_warnings, 'danger'),
+    ('Staffing warnings', data.staffing_warnings, 'danger'),
+  ] %}
+  {% for label, value, color in cards %}
+    <div class="col-sm-6 col-lg-4">
+      <div class="card shadow-sm border-start border-4 border-{{ color }} p-3">
+        <div class="text-muted small">{{ label }}</div>
+        <div class="fs-4 fw-semibold">{{ value }}</div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+<p class="text-muted small mt-3">Generated
+  {{ data.generated_at.strftime('%Y-%m-%d %H:%M UTC') }}</p>
+{% endblock %}

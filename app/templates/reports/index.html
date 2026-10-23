@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h3>Reports &amp; Exports</h3>
+<p class="text-muted">All reports use live saved data and support CSV and
+PDF export.</p>
+
+<div class="row g-3">
+  {% set cards = [
+    ('Master Timetable', 'reports.master_timetable', 'bi-calendar-week'),
+    ('Venue Allocation', 'reports.venue_allocation', 'bi-building'),
+    ('Invigilator Roster', 'reports.invigilator_roster', 'bi-person-badge'),
+    ('Venue Utilisation', 'reports.venue_utilisation', 'bi-bar-chart'),
+    ('Staff Workload', 'reports.staff_workload', 'bi-speedometer2'),
+    ('Unallocated Sessions', 'reports.unallocated', 'bi-exclamation-circle'),
+    ('Allocation Summary', 'reports.summary', 'bi-clipboard-data'),
+    ('Conflict & Exception', 'reports.exceptions', 'bi-shield-exclamation'),
+  ] %}
+  {% for label, endpoint, icon in cards %}
+  <div class="col-sm-6 col-lg-3">
+    <a href="{{ url_for(endpoint) }}" class="text-decoration-none">
+      <div class="card shadow-sm h-100 stat-card">
+        <div class="card-body text-center">
+          <i class="bi {{ icon }} fs-2 text-primary"></i>
+          <div class="mt-2 fw-semibold text-dark">{{ label }}</div>
+        </div>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

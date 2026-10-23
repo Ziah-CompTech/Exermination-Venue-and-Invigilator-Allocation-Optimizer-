@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Allocation Runs{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Dashboard</h3>
+  <a href="{{ url_for('reports.index') }}" class="btn btn-sm btn-outline-primary">
+    <i class="bi bi-file-earmark-text"></i> View Reports
+  </a>
+</div>
+  <div>
+    <a class="btn btn-outline-secondary"
+       href="{{ url_for('allocations.conflicts') }}">
+      <i class="bi bi-exclamation-triangle"></i> Conflict Viewer</a>
+    <a class="btn btn-primary"
+       href="{{ url_for('allocations.generate') }}">
+      <i class="bi bi-cpu"></i> New Allocation Run</a>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead class="table-light">
+        <tr><th>#</th><th>Period</th><th>Window</th><th>Status</th>
+            <th>Wall time</th><th>Created</th><th>Flags</th><th></th></tr>
+      </thead>
+      <tbody>
+      {% for r in runs %}
+        <tr>
+          <td>#{{ r.id }}</td>
+          <td>{{ r.exam_period }}</td>
+          <td>{{ r.start_date or '—' }} → {{ r.end_date or '—' }}</td>
+          <td>
+            {% set cls = {'optimal':'success','feasible':'primary',
+                          'infeasible':'danger','unknown':'warning',
+                          'timeout':'warning','failed':'danger',
+                          'pending':'secondary','running':'info'}.get(r.status,'secondary') %}
+            <span class="badge bg-{{ cls }}">{{ r.status }}</span>
+          </td>
+          <td>{{ '%.2f'|format(r.solver_wall_time or 0) }}s</td>
+          <td>{{ r.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>
+            {% if r.approved %}<span class="badge bg-success">Approved</span>{% endif %}
+            {% if r.published %}<span class="badge bg-primary">Published</span>{% endif %}
+          </td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary"
+               href="{{ url_for('allocations.view', rid=r.id) }}">View</a>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="8" class="text-center text-muted py-4">
+          No allocation runs yet. Click <strong>New Allocation Run</strong>
+          to generate one.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

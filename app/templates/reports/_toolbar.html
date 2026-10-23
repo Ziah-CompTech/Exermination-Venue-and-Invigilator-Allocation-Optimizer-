@@ -1,0 +1,42 @@
+<div class="d-flex flex-wrap gap-2 align-items-end mb-3">
+  <a href="{{ url_for('reports.index') }}"
+     class="btn btn-sm btn-outline-secondary me-2">
+    <i class="bi bi-arrow-left"></i> Back to Reports
+  </a>
+
+  <form class="d-flex gap-2 align-items-end" method="get">
+    <div>
+      <label class="form-label small mb-1">Period</label>
+      <select class="form-select form-select-sm" name="period">
+        <option value="">All periods</option>
+        {% for p in periods %}
+          <option value="{{ p }}" {% if period == p %}selected{% endif %}>{{ p }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% if show_dates %}
+    <div>
+      <label class="form-label small mb-1">Start</label>
+      <input type="date" class="form-control form-control-sm" name="start"
+             value="{{ start or '' }}">
+    </div>
+    <div>
+      <label class="form-label small mb-1">End</label>
+      <input type="date" class="form-control form-control-sm" name="end"
+             value="{{ end or '' }}">
+    </div>
+    {% endif %}
+    <button class="btn btn-sm btn-outline-secondary">Apply</button>
+  </form>
+
+  <div class="ms-auto">
+    <a class="btn btn-sm btn-outline-primary"
+       href="{{ request.path }}?{{ request.query_string.decode() }}&format=csv">
+      <i class="bi bi-filetype-csv"></i> CSV</a>
+    <a class="btn btn-sm btn-outline-danger"
+       href="{{ request.path }}?{{ request.query_string.decode() }}&format=pdf">
+      <i class="bi bi-filetype-pdf"></i> PDF</a>
+    <button class="btn btn-sm btn-outline-dark" onclick="window.print()">
+      <i class="bi bi-printer"></i> Print</button>
+  </div>
+</div>

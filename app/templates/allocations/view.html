@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Run #{{ run.id }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Run #{{ run.id }}
+    <small class="text-muted">{{ run.exam_period }}</small></h3>
+  <div class="d-flex gap-2">
+    {% if run.status in ('optimal','feasible') and not run.approved %}
+      <form method="post"
+            action="{{ url_for('allocations.approve', rid=run.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-success">Approve</button>
+      </form>
+    {% endif %}
+    {% if run.approved and not run.published %}
+      <form method="post"
+            action="{{ url_for('allocations.publish', rid=run.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-primary">Publish</button>
+      </form>
+    {% endif %}
+    {% if run.published %}
+      <form method="post"
+            action="{{ url_for('allocations.unpublish', rid=run.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-outline-warning"
+                data-confirm="Unpublish this run?">Unpublish</button>
+      </form>
+    {% endif %}
+    {% if run.approved %}
+      <form method="post"
+            action="{{ url_for('allocations.unapprove', rid=run.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-outline-secondary"
+                data-confirm="Remove approval?">Unapprove</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card shadow-sm p-3">
+      <div class="text-muted small">Status</div>
+      {% set cls = {'optimal':'success','feasible':'primary',
+                    'infeasible':'danger','unknown':'warning'}.get(run.status,'secondary') %}
+      <div class="fs-5"><span class="badge bg-{{ cls }}">{{ run.status }}</span></div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm p-3">
+      <div class="text-muted small">Objective</div>
+      <div class="fs-5">{{ '%.1f'|format(run.objective_value or 0) }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm p-3">
+      <div class="text-muted small">Wall time</div>
+      <div class="fs-5">{{ '%.2f'|format(run.solver_wall_time or 0) }}s</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm p-3">
+      <div class="text-muted small">Created</div>
+      <div class="fs-6">{{ run.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+    </div>
+  </div>
+</div>
+
+{% if diagnostics %}
+<div class="card shadow-sm mt-3">
+  <div class="card-header bg-white fw-semibold">Solver Diagnostics</div>
+  <ul class="list-group list-group-flush small">
+    {% for line in diagnostics %}
+      <li class="list-group-item">{{ line }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<div class="card shadow-sm mt-3">
+  <div class="card-header bg-white fw-semibold">Allocations</div>
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead class="table-light">
+        <tr><th>Session</th><th>When</th><th>Candidates</th>
+            <th>Venues</th><th>Seats</th><th>Invigilators</th><th>Flags</th></tr>
+      </thead>
+      <tbody>
+      {% for row in rows %}
+        <tr>
+          <td>#{{ row.session.id }} · {{ row.session.examination.title }}</td>
+          <td>{{ row.session.exam_date }}
+            {{ row.session.start_time.strftime('%H:%M') }}–{{ row.session.end_time.strftime('%H:%M') }}</td>
+          <td>{{ row.session.expected_candidates }}</td>
+          <td>
+            {% for va in row.venue_allocs %}
+              <div>{{ va.venue.code }}
+                <span class="text-muted small">
+                  ({{ va.candidates_assigned }} / {{ va.venue.effective_capacity }})
+                </span>
+                {% if va.is_manual %}<span class="badge bg-info">manual</span>{% endif %}
+              </div>
+            {% else %}<span class="text-muted">— none —</span>{% endfor %}
+          </td>
+          <td>{{ row.total_seats }}</td>
+          <td>
+            {% for a in row.invigilator_assigns %}
+              <div>{{ a.invigilator.staff_number }} — {{ a.invigilator.full_name }}
+                {% if a.is_manual %}<span class="badge bg-info">manual</span>{% endif %}
+              </div>
+            {% else %}<span class="text-muted">— none —</span>{% endfor %}
+          </td>
+          <td>
+            {% if not row.capacity_ok %}
+              <span class="badge bg-danger">capacity</span>{% endif %}
+            {% if not row.staffing_ok %}
+              <span class="badge bg-warning text-dark">staffing</span>{% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="7" class="text-center text-muted py-4">
+          No sessions in this run's scope.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<a href="{{ url_for('allocations.index') }}"
+   class="btn btn-outline-secondary mt-3">Back to runs</a>
+{% endblock %}

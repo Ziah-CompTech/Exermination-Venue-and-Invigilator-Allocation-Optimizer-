@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Venue Utilisation{% endblock %}
+{% block content %}
+<h3>Venue Utilisation</h3>
+{% set show_dates = False %}
+{% include "reports/_toolbar.html" %}
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm align-middle mb-0">
+      <thead class="table-light">
+        <tr><th>Venue</th><th>Name</th><th>Capacity</th><th>Sessions</th>
+            <th>Seats Used</th><th>Utilisation</th></tr>
+      </thead>
+      <tbody>
+      {% for r in rows %}
+        <tr>
+          <td>{{ r.venue_code }}</td>
+          <td>{{ r.venue_name }}</td>
+          <td>{{ r.capacity }}</td>
+          <td>{{ r.sessions_used }}</td>
+          <td>{{ r.seats_used }}</td>
+          <td>
+            <div class="progress" style="height: 18px;">
+              <div class="progress-bar
+                {% if r.utilisation_pct >= 75 %}bg-success
+                {% elif r.utilisation_pct >= 40 %}bg-primary
+                {% else %}bg-warning{% endif %}"
+                style="width: {{ [r.utilisation_pct, 100]|min }}%">
+                {{ r.utilisation_pct }}%
+              </div>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6" class="text-center text-muted py-4">No data.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<p class="text-muted small mt-2">Generated
+  {{ generated_at.strftime('%Y-%m-%d %H:%M UTC') }}</p>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ s.reg_number }}{% endblock %}
+{% block content %}
+<h3>{{ s.full_name }} <small class="text-muted">({{ s.reg_number }})</small></h3>
+<div class="row g-3 mt-2">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">Profile</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Email:</strong> {{ s.email or '—' }}</li>
+        <li class="list-group-item"><strong>Phone:</strong> {{ s.phone or '—' }}</li>
+        <li class="list-group-item"><strong>Programme:</strong> {{ s.programme or '—' }}</li>
+        <li class="list-group-item"><strong>Year:</strong> {{ s.year_of_study }}</li>
+        <li class="list-group-item"><strong>Department:</strong>
+          {{ s.department.name if s.department else '—' }}</li>
+        <li class="list-group-item"><strong>Linked user:</strong>
+          {{ s.user.username if s.user else '—' }}</li>
+        <li class="list-group-item"><strong>Status:</strong>
+          {{ 'Active' if s.is_active else 'Inactive' }}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">Registered Subjects</div>
+      <ul class="list-group list-group-flush">
+        {% for r in s.registrations %}
+          <li class="list-group-item">{{ r.subject.code }} — {{ r.subject.title }}
+            <span class="text-muted small">({{ r.exam_period }})</span></li>
+        {% else %}
+          <li class="list-group-item text-muted">None.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+<a href="{{ url_for('students.index') }}" class="btn btn-outline-secondary mt-3">Back</a>
+{% endblock %}

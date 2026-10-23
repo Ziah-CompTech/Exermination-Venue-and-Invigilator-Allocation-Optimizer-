@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Availability — {{ v.code }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Unavailability — {{ v.code }} ({{ v.name }})</h3>
+  <a href="{{ url_for('venues.index') }}" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">Add unavailability period</div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.start_dt.label(class="form-label") }}
+            {{ form.start_dt(class="form-control", type="datetime-local") }}
+          </div>
+          <div class="mb-3">
+            {{ form.end_dt.label(class="form-label") }}
+            {{ form.end_dt(class="form-control", type="datetime-local") }}
+          </div>
+          <div class="mb-3">
+            {{ form.reason.label(class="form-label") }}
+            {{ form.reason(class="form-control") }}
+          </div>
+          {{ form.submit(class="btn btn-primary") }}
+        </form>
+        <p class="text-muted small mt-3 mb-0">
+          During a block, the venue is excluded from allocation by the solver.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">Current blocks</div>
+      <ul class="list-group list-group-flush">
+        {% for b in blocks %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            <strong>{{ b.start_dt.strftime('%Y-%m-%d %H:%M') }}</strong>
+            → {{ b.end_dt.strftime('%Y-%m-%d %H:%M') }}
+            {% if b.reason %}<span class="text-muted">({{ b.reason }})</span>{% endif %}
+          </span>
+          <form method="post"
+                action="{{ url_for('venues.delete_availability', aid=b.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-sm btn-outline-danger"
+                    data-confirm="Remove this block?">Remove</button>
+          </form>
+        </li>
+        {% else %}
+          <li class="list-group-item text-muted">No blocks — venue is always available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

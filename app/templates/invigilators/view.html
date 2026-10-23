@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ i.staff_number }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">{{ i.full_name }}
+    <small class="text-muted">({{ i.staff_number }})</small></h3>
+  <div>
+    <a class="btn btn-primary" href="{{ url_for('invigilators.edit', iid=i.id) }}">Edit</a>
+    <a class="btn btn-outline-secondary"
+       href="{{ url_for('invigilators.availability', iid=i.id) }}">Availability</a>
+    <a class="btn btn-outline-secondary"
+       href="{{ url_for('invigilators.workload', iid=i.id) }}">Workload</a>
+    <a class="btn btn-outline-secondary"
+       href="{{ url_for('invigilators.index') }}">Back</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white">Profile</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Email:</strong> {{ i.email or '—' }}</li>
+        <li class="list-group-item"><strong>Phone:</strong> {{ i.phone or '—' }}</li>
+        <li class="list-group-item"><strong>Department:</strong>
+          {{ i.department.name if i.department else '—' }}</li>
+        <li class="list-group-item"><strong>Account:</strong>
+          {{ i.user.username if i.user else '—' }}</li>
+        <li class="list-group-item"><strong>Status:</strong>
+          {{ 'Active' if i.is_active else 'Inactive' }}</li>
+        <li class="list-group-item"><strong>Workload limit:</strong>
+          {{ i.workload_limit.max_per_day if i.workload_limit else '—' }} /day ·
+          {{ i.workload_limit.max_per_period if i.workload_limit else '—' }} /period
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white">Subjects taught</div>
+      <ul class="list-group list-group-flush">
+        {% for s in i.subjects_taught %}
+          <li class="list-group-item">{{ s.subject.code }} — {{ s.subject.title }}</li>
+        {% else %}
+          <li class="list-group-item text-muted">None.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white">Assignments</div>
+      <ul class="list-group list-group-flush">
+        {% for a in i.assignments %}
+          <li class="list-group-item">
+            {{ a.session.exam_date }} — {{ a.session.examination.title }}
+          </li>
+        {% else %}
+          <li class="list-group-item text-muted">None yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

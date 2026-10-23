@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white"><h4 class="mb-0">{{ title }}</h4></div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="row g-3">
+            <div class="col-md-6">
+              {{ form.reg_number.label(class="form-label") }}
+              {{ form.reg_number(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+              {{ form.full_name.label(class="form-label") }}
+              {{ form.full_name(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+              {{ form.email.label(class="form-label") }}
+              {{ form.email(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+              {{ form.phone.label(class="form-label") }}
+              {{ form.phone(class="form-control") }}
+            </div>
+            <div class="col-md-4">
+              {{ form.year_of_study.label(class="form-label") }}
+              {{ form.year_of_study(class="form-control") }}
+            </div>
+            <div class="col-md-8">
+              {{ form.programme.label(class="form-label") }}
+              {{ form.programme(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+              {{ form.department_id.label(class="form-label") }}
+              {{ form.department_id(class="form-select") }}
+            </div>
+            <div class="col-md-6">
+              {{ form.user_id.label(class="form-label") }}
+              {{ form.user_id(class="form-select") }}
+              <div class="form-text">
+                Optional. Links this student record to a login account
+                so they can see their own examination timetable.
+              </div>
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+              <div class="form-check mt-4">
+                {{ form.is_active(class="form-check-input") }}
+                {{ form.is_active.label(class="form-check-label") }}
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 d-flex gap-2">
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('students.index') }}"
+               class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ e.title }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">{{ e.title }}</h3>
+  <div>
+    <a class="btn btn-outline-secondary"
+       href="{{ url_for('examinations.sessions', eid=e.id) }}">
+      <i class="bi bi-calendar-plus"></i> Manage Sessions</a>
+    <a class="btn btn-primary"
+       href="{{ url_for('examinations.edit', eid=e.id) }}">Edit</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white">Details</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <strong>Subject:</strong> {{ e.subject.code }} — {{ e.subject.title }}
+        </li>
+        <li class="list-group-item"><strong>Period:</strong> {{ e.exam_period }}</li>
+        <li class="list-group-item">
+          <strong>Candidates:</strong> {{ e.registered_candidates }}
+          {% if e.is_estimated %}<span class="badge bg-info">estimated</span>{% endif %}
+        </li>
+        <li class="list-group-item">
+          <strong>Venue type:</strong> {{ e.required_venue_type }}
+        </li>
+        <li class="list-group-item">
+          <strong>Facilities required:</strong> {{ e.required_facilities or '—' }}
+        </li>
+        <li class="list-group-item">
+          <strong>Invigilators required:</strong> {{ e.invigilators_required }}
+        </li>
+        <li class="list-group-item">
+          <strong>Status:</strong> <span class="badge bg-secondary">{{ e.status }}</span>
+        </li>
+        {% if e.special_requirements %}
+          <li class="list-group-item">
+            <strong>Special:</strong> {{ e.special_requirements }}
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white">
+        Sessions ({{ e.sessions|length }})
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for s in e.sessions %}
+          <li class="list-group-item">
+            <strong>{{ s.exam_date }}</strong>
+            {{ s.start_time.strftime('%H:%M') }}–{{ s.end_time.strftime('%H:%M') }}
+            · {{ s.expected_candidates }} candidates
+            <span class="badge bg-secondary">{{ s.status }}</span>
+          </li>
+        {% else %}
+          <li class="list-group-item text-muted">
+            No sessions scheduled yet. Click "Manage Sessions" to add one.
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<a href="{{ url_for('examinations.index') }}"
+   class="btn btn-outline-secondary mt-3">Back</a>
+{% endblock %}
