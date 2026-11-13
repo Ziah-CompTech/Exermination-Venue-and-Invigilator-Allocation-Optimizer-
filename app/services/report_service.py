@@ -10,6 +10,8 @@ from ..models.venue import Venue, VenueAllocation
 from ..models.invigilator import Invigilator, InvigilatorAssignment
 from ..models.student import Student, StudentSubjectRegistration
 from ..extensions import db
+from ..models.venue import Venue
+
 
 
 def _date_filter(query, start, end):
@@ -60,9 +62,6 @@ def master_timetable(period=None, start=None, end=None):
 # --------------------------------------------------------------------- #
 # Venue allocation report
 # --------------------------------------------------------------------- #
-
-from ..models.venue import Venue
-
 def venue_allocation_report(period=None):
     q = (VenueAllocation.query
          .join(VenueAllocation.session)
