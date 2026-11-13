@@ -61,10 +61,13 @@ def master_timetable(period=None, start=None, end=None):
 # Venue allocation report
 # --------------------------------------------------------------------- #
 
+from ..models.venue import Venue
+
 def venue_allocation_report(period=None):
     q = (VenueAllocation.query
          .join(VenueAllocation.session)
-         .join(ExaminationSession.examination))
+         .join(ExaminationSession.examination)
+         .join(Venue, VenueAllocation.venue_id == Venue.id)) # <-- ADD THIS JOIN
     if period:
         q = q.filter(Examination.exam_period == period)
     q = q.order_by(ExaminationSession.exam_date,
